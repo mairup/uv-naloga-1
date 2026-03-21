@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class AssignmentOneApplication extends Application {
     @Override
@@ -14,7 +15,7 @@ public class AssignmentOneApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(AssignmentOneApplication.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 850, 550);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-        scene.getStylesheets().add(AssignmentOneApplication.class.getResource("styles.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(AssignmentOneApplication.class.getResource("styles.css")).toExternalForm());
         stage.setTitle("Naloga 1");
         stage.setScene(scene);
         stage.show();
