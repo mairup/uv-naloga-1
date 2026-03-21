@@ -1,1 +1,1 @@
-rootProject.name = "naloga1"
+rootProject.name = "prvaNaloga"

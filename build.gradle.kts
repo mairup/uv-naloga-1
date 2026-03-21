@@ -2,12 +2,12 @@ plugins {
     java
     application
     id("org.javamodularity.moduleplugin") version "1.8.15"
-    id("org.openjfx.javafxplugin") version "0.0.13"
-    id("org.beryx.jlink") version "2.25.0"
+    id("org.openjfx.javafxplugin") version "0.0.14"
+    id("org.beryx.jlink") version "2.26.0"
     idea
 }
 
-group = "uv.naloge.prva"
+group = "uv.naloge"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -27,8 +27,8 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 application {
-    mainModule.set("uv.naloge.prva.naloga1")
-    mainClass.set("uv.naloge.prva.naloga1.AssignmentOneApplication")
+    mainModule.set("uv.naloge.prvaNaloga")
+    mainClass.set("uv.naloge.prvaNaloga.AssignmentOneApplication")
 }
 
 javafx {

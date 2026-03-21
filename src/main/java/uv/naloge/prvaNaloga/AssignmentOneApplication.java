@@ -1,4 +1,4 @@
-package uv.naloge.prva.naloga1;
+package uv.naloge.prvaNaloga;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +12,10 @@ public class AssignmentOneApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(AssignmentOneApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 850, 550);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-        stage.setTitle("Naloga1");
+        scene.getStylesheets().add(AssignmentOneApplication.class.getResource("styles.css").toExternalForm());
+        stage.setTitle("Naloga 1");
         stage.setScene(scene);
         stage.show();
     }

@@ -1,4 +1,4 @@
-package uv.naloge.prva.naloga1;
+package uv.naloge.prvaNaloga;
 
 import javafx.application.Application;
 
