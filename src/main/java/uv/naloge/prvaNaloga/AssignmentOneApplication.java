@@ -69,7 +69,7 @@ public class AssignmentOneApplication extends Application {
         );
 
         Parent rootNode = fxmlLoader.load();
-        Scene scene = new Scene(rootNode, 850, 550);
+        Scene scene = new Scene(rootNode, 900, 650);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         scene.getStylesheets().add(Objects.requireNonNull(AssignmentOneApplication.class.getResource("styles.css")).toExternalForm());
 

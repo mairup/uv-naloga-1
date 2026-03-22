@@ -4,12 +4,64 @@
 }
 
 .floating-body {
-    -fx-background-color: white; /* Or a slightly lighter shade than root */
+    -fx-background-color: #ffffff;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
     -fx-border-color: lightgray;
     -fx-border-width: 1px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+.floating-toolbar-container {
+    -fx-background-color: #fdfdfd;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: lightgray;
+    -fx-border-width: 1px;
+    -fx-padding: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);
+}
+
+.floating-toolbar {
+    -fx-background-color: transparent;
+}
+
+.floating-action-panel {
+    -fx-background-color: #f2f7ff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #d5d5d5;
+    -fx-border-width: 1px;
+    -fx-padding: 14px;
+}
+
+.floating-input-panel {
+    -fx-background-color: #f8f8f8;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #d8d8d8;
+    -fx-border-width: 1px;
+}
+
+.floating-reservation-panel {
+    -fx-background-color: #eef4ff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #d4dced;
+    -fx-border-width: 1px;
+}
+
+.floating-radio-option {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #d9e1ef;
+    -fx-border-width: 1px;
+    -fx-padding: 6px 10px;
+}
+
+.floating-radio-button {
+    -fx-label-padding: 0 0 0 8px;
 }
 
 .status-label {
