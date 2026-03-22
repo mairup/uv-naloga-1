@@ -1,4 +1,4 @@
-First homework project for the User Interfaces class at FRI
+## First homework project for the User Interfaces class at FRI
 
 The application is built using JavaFX and BootstrapFX, following the assignment requirements for a simple, single-screen desktop UI. The project demonstrates basic UI/UX principles, menu and toolbar usage, and file operations, as specified in the assignment.
 
