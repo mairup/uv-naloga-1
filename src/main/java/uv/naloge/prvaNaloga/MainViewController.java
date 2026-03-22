@@ -7,10 +7,12 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 
@@ -20,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MainViewController {
 
@@ -44,6 +48,15 @@ public class MainViewController {
     private TextField classTimeField;
 
     @FXML
+    private RadioButton registerRadioButton;
+
+    @FXML
+    private RadioButton unregisterRadioButton;
+
+    @FXML
+    private RadioButton changeReservationRadioButton;
+
+    @FXML
     private ToggleGroup actionToggleGroup;
 
     @FXML
@@ -58,14 +71,39 @@ public class MainViewController {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private RadioMenuItem languageSiMenuItem;
+
+    @FXML
+    private RadioMenuItem languageEngMenuItem;
+
+    @FXML
+    private ResourceBundle resources;
+
     private boolean isUpdatingSelection;
+    private boolean suppressNextSelectionLog;
 
     // --- Initialization ---
 
     public void initialize() {
+        initializeLanguageMenu();
         initializeSpinner();
         initializeComboBox();
         resetStatus();
+    }
+
+    private void initializeLanguageMenu() {
+        ToggleGroup languageToggleGroup = new ToggleGroup();
+        languageSiMenuItem.setToggleGroup(languageToggleGroup);
+        languageEngMenuItem.setToggleGroup(languageToggleGroup);
+
+        Locale currentLocale = AssignmentOneApplication.getCurrentLocale();
+        if ("en".equalsIgnoreCase(currentLocale.getLanguage())) {
+            languageEngMenuItem.setSelected(true);
+            return;
+        }
+
+        languageSiMenuItem.setSelected(true);
     }
 
     private void initializeSpinner() {
@@ -104,42 +142,80 @@ public class MainViewController {
     @FXML
     public void onToggleParticipantName() {
         participantNameField.setDisable(!toggleParticipantNameItem.isSelected());
-        logAction("Participant Name " + (toggleParticipantNameItem.isSelected() ? "Enabled" : "Disabled"));
+        logAction(getFieldToggleMessage(
+                translateAndFormat("label.participantName.noColon"),
+                toggleParticipantNameItem.isSelected()
+        ));
     }
 
     @FXML
     public void onToggleClassType() {
         classTypeField.setDisable(!toggleClassTypeItem.isSelected());
-        logAction("Class Type " + (toggleClassTypeItem.isSelected() ? "Enabled" : "Disabled"));
+        logAction(getFieldToggleMessage(
+                translateAndFormat("label.classType.noColon"),
+                toggleClassTypeItem.isSelected()
+        ));
     }
 
     @FXML
     public void onToggleClassTime() {
         classTimeField.setDisable(!toggleClassTimeItem.isSelected());
-        logAction("Class Time " + (toggleClassTimeItem.isSelected() ? "Enabled" : "Disabled"));
+        logAction(getFieldToggleMessage(
+                translateAndFormat("label.classTime.noColon"),
+                toggleClassTimeItem.isSelected()
+        ));
     }
 
     @FXML
     public void onExecuteAction() {
-        RadioButton selectedActionButton = (RadioButton) actionToggleGroup.getSelectedToggle();
-        if (selectedActionButton == null) {
-            showError("No Action Selected", "Please select an action to execute.");
+        Toggle selectedToggle = actionToggleGroup.getSelectedToggle();
+        if (!(selectedToggle instanceof RadioButton selectedActionButton)) {
+            showError(translateAndFormat("error.noAction.title"), translateAndFormat("error.noAction.details"));
             return;
         }
 
-        String selectedActionName = selectedActionButton.getText();
-        switch (selectedActionName) {
-            case "Register Participant" -> registerParticipant();
-            case "Unregister Participant" -> unregisterParticipant();
-            case "Change Reservation" -> changeReservation();
-            default -> logAction("Unknown Action");
+        if (selectedActionButton == registerRadioButton) {
+            registerParticipant();
+            return;
         }
+
+        if (selectedActionButton == unregisterRadioButton) {
+            unregisterParticipant();
+            return;
+        }
+
+        if (selectedActionButton == changeReservationRadioButton) {
+            changeReservation();
+            return;
+        }
+
+        logAction(translateAndFormat("status.unknownAction"));
     }
 
     @FXML
     public void onPrintAll() {
-        logAction("Printing all items...");
+        logAction(translateAndFormat("status.printingAll"));
         mainTextArea.setText(buildPrintAllContent());
+    }
+
+    @FXML
+    public void onAbout() {
+        try {
+            AssignmentOneApplication.openExternalLink(translateAndFormat("about.repositoryUrl"));
+            logAction(translateAndFormat("status.openedRepository"));
+        } catch (Exception exception) {
+            showError(translateAndFormat("error.about.title"), translateAndFormat("error.about.details"));
+        }
+    }
+
+    @FXML
+    public void onLanguageSi() {
+        AssignmentOneApplication.switchLanguage(Locale.forLanguageTag("sl"));
+    }
+
+    @FXML
+    public void onLanguageEng() {
+        AssignmentOneApplication.switchLanguage(Locale.forLanguageTag("en"));
     }
 
     @FXML
@@ -156,31 +232,31 @@ public class MainViewController {
     @FXML
     public void onSave() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Reservations");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        fileChooser.setTitle(translateAndFormat("dialog.save.title"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(translateAndFormat("dialog.fileFilter.text"), "*.txt"));
         File selectedFile = fileChooser.showSaveDialog(statusLabel.getScene().getWindow());
         if (selectedFile == null) {
-            logAction("Save command cancelled");
+            logAction(translateAndFormat("status.saveCancelled"));
             return;
         }
 
         String fileContent = buildPrintAllContent();
         try {
             Files.writeString(selectedFile.toPath(), fileContent, StandardCharsets.UTF_8);
-            logAction("Saved: " + selectedFile.getName());
+            logAction(translateAndFormat("status.saved", selectedFile.getName()));
         } catch (IOException exception) {
-            showError("Save Failed", exception.getMessage());
+            showError(translateAndFormat("error.saveFailed.title"), exception.getMessage());
         }
     }
 
     @FXML
     public void onOpen() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        fileChooser.setTitle(translateAndFormat("dialog.open.title"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(translateAndFormat("dialog.fileFilter.text"), "*.txt"));
         File selectedFile = fileChooser.showOpenDialog(statusLabel.getScene().getWindow());
         if (selectedFile == null) {
-            logAction("Open command cancelled");
+            logAction(translateAndFormat("status.openCancelled"));
             return;
         }
 
@@ -188,7 +264,7 @@ public class MainViewController {
         try {
             fileLines = Files.readAllLines(selectedFile.toPath(), StandardCharsets.UTF_8);
         } catch (IOException exception) {
-            showError("Open Failed", exception.getMessage());
+            showError(translateAndFormat("error.openFailed.title"), exception.getMessage());
             return;
         }
 
@@ -197,6 +273,7 @@ public class MainViewController {
             return;
         }
 
+        mainTextArea.clear();
         reservationComboBox.getItems().setAll(parsedReservations);
         if (reservationComboBox.getItems().isEmpty()) {
             changeSelection(-1);
@@ -204,14 +281,14 @@ public class MainViewController {
             changeSelection(0);
         }
 
-        logAction("Opened: " + selectedFile.getName() + " (" + parsedReservations.size() + " rows loaded)");
+        logAction(translateAndFormat("status.openedRows", selectedFile.getName(), parsedReservations.size()));
     }
 
     // --- Action Logic ---
 
     private void registerParticipant() {
         if (participantNameField.isDisabled() || classTypeField.isDisabled() || classTimeField.isDisabled()) {
-            showError("Invalid Input", "All fields must be enabled and filled to register.");
+            showError(translateAndFormat("error.invalidInput.title"), translateAndFormat("error.invalidInput.details"));
             return;
         }
 
@@ -220,50 +297,52 @@ public class MainViewController {
         String classTime = getTrimmedClassTime();
 
         if (participantName.isEmpty() || classType.isEmpty() || classTime.isEmpty()) {
-            showError("Invalid Input", "All fields must be enabled and filled to register.");
+            showError(translateAndFormat("error.invalidInput.title"), translateAndFormat("error.invalidInput.details"));
             return;
         }
 
         Reservation newReservation = new Reservation(participantName, classType, classTime);
 
         if (hasMatchingReservation(newReservation)) {
-            showError("Duplicate Entry", "This reservation already exists.");
+            showError(translateAndFormat("error.duplicateEntry.title"), translateAndFormat("error.duplicateEntry.details"));
             return;
         }
 
         reservationComboBox.getItems().add(newReservation);
         reservationComboBox.getSelectionModel().select(newReservation);
-        logAction("Registered: " + newReservation);
+        logAction(translateAndFormat("status.registered", newReservation));
     }
 
     private void unregisterParticipant() {
         int selectedIndex = reservationComboBox.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
-            showError("No Selection", "Please select a participant to unregister.");
+            showError(translateAndFormat("error.noSelection.title"), translateAndFormat("error.noSelection.unregisterDetails"));
             return;
         }
 
+        int deletedPosition = selectedIndex + 1;
         Reservation removedReservation = reservationComboBox.getItems().remove(selectedIndex);
-        logAction("Unregistered: " + removedReservation);
+        logAction(translateAndFormat("status.deletedRecord", deletedPosition, removedReservation));
 
         if (reservationComboBox.getItems().isEmpty()) {
             clearFields();
             return;
         }
 
+        suppressNextSelectionLog = true;
         int newIndex = Math.min(selectedIndex, reservationComboBox.getItems().size() - 1);
         reservationComboBox.getSelectionModel().select(newIndex);
     }
 
     private void changeReservation() {
         if (participantNameField.isDisabled() && classTypeField.isDisabled() && classTimeField.isDisabled()) {
-            showError("Action Not Allowed", "Enable at least one field using the Edit menu to change reservation.");
+            showError(translateAndFormat("error.actionNotAllowed.title"), translateAndFormat("error.actionNotAllowed.details"));
             return;
         }
 
         int selectedIndex = reservationComboBox.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
-            showError("No Selection", "Please select a participant to change.");
+            showError(translateAndFormat("error.noSelection.title"), translateAndFormat("error.noSelection.changeDetails"));
             return;
         }
 
@@ -272,7 +351,7 @@ public class MainViewController {
         String classTime = getTrimmedClassTime();
 
         if (participantName.isEmpty() || classType.isEmpty() || classTime.isEmpty()) {
-            showError("Missing Information", "Please fill in all fields to change reservation.");
+            showError(translateAndFormat("error.missingInformation.title"), translateAndFormat("error.missingInformation.details"));
             return;
         }
 
@@ -280,13 +359,13 @@ public class MainViewController {
 
         Reservation currentReservation = reservationComboBox.getItems().get(selectedIndex);
         if (areReservationsEqual(currentReservation, updatedReservation)) {
-            logAction("No change happened (data identical).");
+            logAction(translateAndFormat("status.noChange"));
             return;
         }
 
         reservationComboBox.getItems().set(selectedIndex, updatedReservation);
         reservationComboBox.getSelectionModel().select(selectedIndex);
-        logAction("Changed to: " + updatedReservation);
+        logAction(translateAndFormat("status.changedTo", updatedReservation));
     }
 
     // --- Selection & State Management ---
@@ -339,15 +418,22 @@ public class MainViewController {
     }
 
     private void updateFieldsAndLog(int index, boolean isValidIndex, int spinnerValue) {
+        boolean shouldLogSelection = !suppressNextSelectionLog;
+        suppressNextSelectionLog = false;
+
         if (isValidIndex) {
             Reservation selectedReservation = reservationComboBox.getItems().get(index);
             populateFieldsFromSelection(selectedReservation);
-            logSelectedRecordMessage(spinnerValue, selectedReservation);
+            if (shouldLogSelection) {
+                logSelectedRecordMessage(spinnerValue, selectedReservation);
+            }
             return;
         }
 
         clearFields();
-        logSelectedRecordMessage(spinnerValue, null);
+        if (shouldLogSelection) {
+            logSelectedRecordMessage(spinnerValue, null);
+        }
     }
 
     private void updateSpinnerRange() {
@@ -379,11 +465,11 @@ public class MainViewController {
 
     private void logSelectedRecordMessage(int position, Reservation reservation) {
         if (reservation == null) {
-            logAction("Selected record [" + position + "]: No element");
+            logAction(translateAndFormat("status.selectedRecord", position, translateAndFormat("status.noElement")));
             return;
         }
 
-        logAction("Selected record [" + position + "]: " + reservation);
+        logAction(translateAndFormat("status.selectedRecord", position, reservation));
     }
 
     private void populateFieldsFromSelection(Reservation reservation) {
@@ -457,8 +543,8 @@ public class MainViewController {
 
             Reservation parsedReservation = parseReservationLine(line);
             if (parsedReservation == null) {
-                mainTextArea.setText("Invalid file format at line " + lineNumber + ":\n" + rawLine);
-                showError("Invalid File Format", "Invalid line " + lineNumber + ": " + rawLine);
+                mainTextArea.setText(translateAndFormat("error.invalidFileFormat.textArea", lineNumber, rawLine));
+                showError(translateAndFormat("error.invalidFileFormat.title"), translateAndFormat("error.invalidFileFormat.line", lineNumber, rawLine));
                 return null;
             }
 
@@ -488,12 +574,22 @@ public class MainViewController {
 
     private void resetStatus() {
         resetStyle();
-        statusLabel.setText("Ready");
+        statusLabel.setText(translateAndFormat("status.ready"));
     }
 
     private void clearFields() {
         participantNameField.clear();
         classTypeField.clear();
         classTimeField.clear();
+    }
+
+    private String translateAndFormat(String key, Object... parameters) {
+        String template = resources.getString(key);
+        return java.text.MessageFormat.format(template, parameters);
+    }
+
+    private String getFieldToggleMessage(String fieldName, boolean isEnabled) {
+        String enabledStatus = isEnabled ? translateAndFormat("status.enabled") : translateAndFormat("status.disabled");
+        return translateAndFormat("status.fieldToggle", fieldName, enabledStatus);
     }
 }

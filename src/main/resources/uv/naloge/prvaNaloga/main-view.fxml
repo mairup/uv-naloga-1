@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
@@ -29,30 +31,35 @@
     <top>
         <VBox BorderPane.alignment="CENTER">
             <MenuBar>
-                <Menu text="_File">
-                    <MenuItem text="_Open" onAction="#onOpen" accelerator="Shortcut+O"/>
-                    <MenuItem text="_Save" onAction="#onSave" accelerator="Shortcut+S"/>
-                    <MenuItem text="Clea_r" onAction="#onClear" accelerator="Shortcut+R"/>
-                    <MenuItem text="E_xit" onAction="#onExit" accelerator="Shortcut+Q"/>
+                <Menu text="%menu.file">
+                    <MenuItem text="%menu.file.open" onAction="#onOpen" accelerator="Shortcut+O"/>
+                    <MenuItem text="%menu.file.save" onAction="#onSave" accelerator="Shortcut+S"/>
+                    <MenuItem text="%menu.file.clear" onAction="#onClear" accelerator="Shortcut+R"/>
+                    <MenuItem text="%menu.file.exit" onAction="#onExit" accelerator="Shortcut+Q"/>
                 </Menu>
-                <Menu text="_Edit">
-                    <CheckMenuItem fx:id="toggleParticipantNameItem" text="_Participant Name" onAction="#onToggleParticipantName" />
-                    <CheckMenuItem fx:id="toggleClassTypeItem" text="_Type of Class" onAction="#onToggleClassType" />
-                    <CheckMenuItem fx:id="toggleClassTimeItem" text="_Class Time" onAction="#onToggleClassTime" />
+                <Menu text="%menu.edit">
+                    <CheckMenuItem fx:id="toggleParticipantNameItem" text="%menu.edit.participantName" onAction="#onToggleParticipantName" />
+                    <CheckMenuItem fx:id="toggleClassTypeItem" text="%menu.edit.classType" onAction="#onToggleClassType" />
+                    <CheckMenuItem fx:id="toggleClassTimeItem" text="%menu.edit.classTime" onAction="#onToggleClassTime" />
                 </Menu>
-                <Menu text="_View">
-                    <MenuItem text="_Print All" onAction="#onPrintAll" />
+                <Menu text="%menu.view">
+                    <MenuItem text="%menu.view.printAll" onAction="#onPrintAll" />
                 </Menu>
-                <Menu text="_Help">
-                    <MenuItem text="_About" />
+                <Menu text="%menu.help">
+                    <MenuItem text="%menu.help.about" onAction="#onAbout" />
+                    <SeparatorMenuItem />
+                    <Menu text="%menu.help.language">
+                        <RadioMenuItem fx:id="languageSiMenuItem" text="_SI" onAction="#onLanguageSi"/>
+                        <RadioMenuItem fx:id="languageEngMenuItem" text="_ENG" onAction="#onLanguageEng"/>
+                    </Menu>
                 </Menu>
             </MenuBar>
             <ToolBar prefHeight="40.0">
-                <Button mnemonicParsing="false" text="Open" onAction="#onOpen" />
-                <Button mnemonicParsing="false" text="Save" onAction="#onSave" />
-                <Button mnemonicParsing="false" text="Clear" onAction="#onClear" />
-                <Button mnemonicParsing="false" text="Exit" onAction="#onExit" />
-                <Button mnemonicParsing="false" text="Print All" onAction="#onPrintAll" />
+                <Button mnemonicParsing="false" text="%toolbar.open" onAction="#onOpen" />
+                <Button mnemonicParsing="false" text="%toolbar.save" onAction="#onSave" />
+                <Button mnemonicParsing="false" text="%toolbar.clear" onAction="#onClear" />
+                <Button mnemonicParsing="false" text="%toolbar.exit" onAction="#onExit" />
+                <Button mnemonicParsing="false" text="%toolbar.printAll" onAction="#onPrintAll" />
             </ToolBar>
         </VBox>
     </top>
@@ -78,32 +85,32 @@
                             <RowConstraints vgrow="SOMETIMES" />
                         </rowConstraints>
 
-                        <Label text="Participant Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <Label text="%label.participantName" GridPane.rowIndex="0" GridPane.columnIndex="0" />
                         <TextField fx:id="participantNameField" disable="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
-                        <Label text="Type of Class:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                        <Label text="%label.classType" GridPane.rowIndex="1" GridPane.columnIndex="0" />
                         <TextField fx:id="classTypeField" disable="true" GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
-                        <Label text="Class Time:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                        <Label text="%label.classTime" GridPane.rowIndex="2" GridPane.columnIndex="0" />
                         <TextField fx:id="classTimeField" disable="true" GridPane.rowIndex="2" GridPane.columnIndex="1" />
                     </GridPane>
 
                     <HBox spacing="15.0" alignment="CENTER_LEFT">
-                        <RadioButton fx:id="registerRadioButton" text="Register Participant" selected="true">
+                        <RadioButton fx:id="registerRadioButton" text="%radio.registerParticipant" selected="true">
                             <toggleGroup>
                                 <ToggleGroup fx:id="actionToggleGroup"/>
                             </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="unregisterRadioButton" text="Unregister Participant" toggleGroup="$actionToggleGroup"/>
-                        <RadioButton fx:id="changeReservationRadioButton" text="Change Reservation" toggleGroup="$actionToggleGroup"/>
+                        <RadioButton fx:id="unregisterRadioButton" text="%radio.unregisterParticipant" toggleGroup="$actionToggleGroup"/>
+                        <RadioButton fx:id="changeReservationRadioButton" text="%radio.changeReservation" toggleGroup="$actionToggleGroup"/>
                     </HBox>
 
-                    <Button fx:id="executeActionButton" text="Execute Action" onAction="#onExecuteAction" maxWidth="Infinity" />
+                    <Button text="%button.executeAction" onAction="#onExecuteAction" maxWidth="Infinity" />
 
                     <HBox spacing="15.0" alignment="CENTER_LEFT">
-                        <Label text="Reservation:" minWidth="-Infinity" />
+                        <Label text="%label.reservation" minWidth="-Infinity" />
                         <ComboBox fx:id="reservationComboBox" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                        <Label text="at Position:" minWidth="-Infinity" />
+                        <Label text="%label.atPosition" minWidth="-Infinity" />
                         <Spinner fx:id="reservationPositionSpinner" editable="true" prefWidth="80.0" minWidth="-Infinity" />
                     </HBox>
 
@@ -115,7 +122,7 @@
 
     <!-- FRAME: Bottom Status Area -->
     <bottom>
-        <Label fx:id="statusLabel" text="Status: Ready" BorderPane.alignment="CENTER_LEFT" styleClass="status-label">
+        <Label fx:id="statusLabel" text="%status.ready" BorderPane.alignment="CENTER_LEFT" styleClass="status-label">
             <BorderPane.margin>
                 <Insets left="10.0" bottom="5.0" />
             </BorderPane.margin>
