@@ -1,71 +1,154 @@
 .root {
-    /* Constant border radius is 8px */
-    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-family: "Segoe UI", sans-serif;
 }
 
-.floating-body {
-    -fx-background-color: #ffffff;
+.earth-root {
+    -fx-background-color: #9DAD9D;
+}
+
+.earth-menu-bar {
+    -fx-background-color: #8C9C8C;
+    -fx-border-color: #657565;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.floating-body,
+.floating-toolbar-container {
+    -fx-background-color: #F4F6F4;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
-    -fx-border-color: lightgray;
+    -fx-border-color: #657565;
     -fx-border-width: 1px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.25), 10, 0, 0, 4);
 }
 
 .floating-toolbar-container {
-    -fx-background-color: #fdfdfd;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: lightgray;
-    -fx-border-width: 1px;
-    -fx-padding: 8px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);
+    -fx-padding: 6px;
 }
 
-.floating-toolbar {
-    -fx-background-color: transparent;
-}
-
+.floating-input-panel,
+.floating-reservation-panel,
 .floating-action-panel {
-    -fx-background-color: #f2f7ff;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #d5d5d5;
+    -fx-background-color: #DDE4DD;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #9FAF9F;
     -fx-border-width: 1px;
-    -fx-padding: 14px;
 }
 
-.floating-input-panel {
-    -fx-background-color: #f8f8f8;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #d8d8d8;
-    -fx-border-width: 1px;
+.floating-input-panel,
+.floating-action-panel {
+    -fx-padding: 10px;
 }
 
 .floating-reservation-panel {
-    -fx-background-color: #eef4ff;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #d4dced;
-    -fx-border-width: 1px;
+    -fx-padding: 4px;
+}
+
+.floating-toolbar,
+.earth-toolbar {
+    -fx-background-color: transparent;
+    -fx-spacing: 15px;
+    -fx-alignment: CENTER_LEFT;
 }
 
 .floating-radio-option {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 6px;
-    -fx-border-radius: 6px;
-    -fx-border-color: #d9e1ef;
+    -fx-background-color: #E8ECE8;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-color: #A8B8A8;
     -fx-border-width: 1px;
-    -fx-padding: 6px 10px;
+    -fx-padding: 8px 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 2, 0, 0, 1);
 }
 
 .floating-radio-button {
     -fx-label-padding: 0 0 0 8px;
+    -fx-text-fill: #1A251A;
+}
+
+.earth-input {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #657565;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-text-fill: #1A201A;
+}
+
+.earth-input:focused {
+    -fx-border-color: #2C4C3B;
+    -fx-background-color: #FFFFFF;
+}
+
+/* BOOTSTRAP OVERRIDES / FALLBACKS */
+
+.btn {
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-insets: 0, 1;
+}
+
+.btn-primary {
+    -fx-background-color: #2C4C3B;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #1A2E20;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #3D6650;
+    -fx-border-color: #1A2E20;
+}
+
+.btn-success {
+    -fx-background-color: #1A3320;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 1);
+}
+
+.btn-success:hover {
+    -fx-background-color: #2C4C3B;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 4, 0, 0, 2);
 }
 
 .status-label {
     -fx-padding: 2px 5px;
     -fx-font-size: 11px;
+    -fx-text-fill: #1A251A;
 }
 
+.combo-box-base,
+.spinner {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #657565;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.combo-box-base .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: #2C4C3B;
+    -fx-background-radius: 0 4px 4px 0;
+}
+
+.spinner .increment-arrow-button {
+    -fx-background-radius: 0 4px 0 0;
+    -fx-border-color: transparent transparent #1A2E20 transparent;
+}
+
+.spinner .decrement-arrow-button {
+    -fx-background-radius: 0 0 4px 0;
+}
+
+.combo-box-base .arrow,
+.spinner .increment-arrow-button .arrow,
+.spinner .decrement-arrow-button .arrow {
+    -fx-background-color: #FFFFFF;
+}
