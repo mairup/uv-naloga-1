@@ -23,6 +23,8 @@ import java.util.List;
 
 public class MainViewController {
 
+    // --- FXML Fields ---
+
     @FXML
     private CheckMenuItem toggleParticipantNameItem;
 
@@ -56,18 +58,23 @@ public class MainViewController {
     @FXML
     private Label statusLabel;
 
-    private boolean isUpdatingSpinner;
     private boolean isUpdatingSelection;
+
+    // --- Initialization ---
 
     public void initialize() {
         initializeSpinner();
         initializeComboBox();
-        resetStatusStyle();
+        resetStatus();
     }
 
     private void initializeSpinner() {
         reservationPositionSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0, 0));
-        reservationPositionSpinner.valueProperty().addListener((observable, oldValue, newValue) -> onSpinnerValueChanged(newValue));
+        reservationPositionSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                changeSelection(newValue - 1);
+            }
+        });
     }
 
     private void initializeComboBox() {
@@ -80,124 +87,19 @@ public class MainViewController {
         );
 
         reservationComboBox.getItems().addListener((ListChangeListener<Reservation>) change -> updateSpinnerRange());
-        reservationComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onReservationSelectionChanged(newValue));
+        reservationComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                changeSelection(reservationComboBox.getSelectionModel().getSelectedIndex())
+        );
 
         updateSpinnerRange();
         if (reservationComboBox.getItems().isEmpty()) {
-            reservationComboBox.getSelectionModel().clearSelection();
+            changeSelection(-1);
         } else {
-            reservationComboBox.getSelectionModel().selectFirst();
-            updateReservationPositionFromIndex(0);
+            changeSelection(0);
         }
     }
 
-    private void onSpinnerValueChanged(Integer spinnerValue) {
-        if (isUpdatingSpinner || spinnerValue == null) {
-            return;
-        }
-
-        isUpdatingSelection = true;
-        try {
-            int selectedIndex = spinnerValue - 1;
-            if (selectedIndex >= 0 && selectedIndex < reservationComboBox.getItems().size()) {
-                reservationComboBox.getSelectionModel().select(selectedIndex);
-                logSelectedRecordMessage(getReservationPositionFromIndex(selectedIndex), reservationComboBox.getItems().get(selectedIndex));
-            } else {
-                reservationComboBox.getSelectionModel().clearSelection();
-                logSelectedRecordMessage(spinnerValue, null);
-            }
-        } finally {
-            isUpdatingSelection = false;
-        }
-    }
-
-    private void onReservationSelectionChanged(Reservation selectedReservation) {
-        populateFieldsFromSelection(selectedReservation);
-
-        if (isUpdatingSelection) {
-            return;
-        }
-
-        isUpdatingSpinner = true;
-        try {
-            int selectedIndex = reservationComboBox.getSelectionModel().getSelectedIndex();
-            updateReservationPositionFromIndex(selectedIndex);
-            if (selectedIndex >= 0 && selectedIndex < reservationComboBox.getItems().size()) {
-                logSelectedRecordMessage(getReservationPositionFromIndex(selectedIndex), reservationComboBox.getItems().get(selectedIndex));
-            } else {
-                SpinnerValueFactory<Integer> valueFactory = reservationPositionSpinner.getValueFactory();
-                int currentPosition = valueFactory == null || valueFactory.getValue() == null ? 0 : valueFactory.getValue();
-                logSelectedRecordMessage(currentPosition, null);
-            }
-        } finally {
-            isUpdatingSpinner = false;
-        }
-    }
-
-    private void updateSpinnerRange() {
-        int reservationCount = reservationComboBox.getItems().size();
-        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
-                (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner.getValueFactory();
-
-        if (reservationCount == 0) {
-            valueFactory.setMin(0);
-            valueFactory.setMax(0);
-            valueFactory.setValue(0);
-            return;
-        }
-
-        int maxPosition = Math.min(20, reservationCount + 1);
-        valueFactory.setMin(1);
-        valueFactory.setMax(maxPosition);
-
-        if (valueFactory.getValue() == null || valueFactory.getValue() < 1) {
-            valueFactory.setValue(1);
-        } else if (valueFactory.getValue() > maxPosition) {
-            valueFactory.setValue(maxPosition);
-        }
-    }
-
-    private void updateReservationPositionFromIndex(int reservationIndex) {
-        SpinnerValueFactory<Integer> valueFactory = reservationPositionSpinner.getValueFactory();
-        if (valueFactory == null) {
-            return;
-        }
-
-        if (reservationIndex >= 0) {
-            int position = getReservationPositionFromIndex(reservationIndex);
-            valueFactory.setValue(position);
-            return;
-        }
-
-        int emptyPosition = reservationComboBox.getItems().isEmpty() ? 0 : Math.min(20, reservationComboBox.getItems().size() + 1);
-        valueFactory.setValue(emptyPosition);
-    }
-
-    private int getReservationPositionFromIndex(int reservationIndex) {
-        return reservationIndex + 1;
-    }
-
-    private void logSelectedRecordMessage(int position, Reservation reservation) {
-        if (reservation == null) {
-            logAction("Selected record [" + position + "]: No element");
-            return;
-        }
-
-        logAction("Selected record [" + position + "]: " + reservation);
-    }
-
-    private void populateFieldsFromSelection(Reservation reservation) {
-        if (reservation == null) {
-            participantNameField.clear();
-            classTypeField.clear();
-            classTimeField.clear();
-            return;
-        }
-
-        participantNameField.setText(reservation.participantName());
-        classTypeField.setText(reservation.classType());
-        classTimeField.setText(reservation.classTime());
-    }
+    // --- FXML Event Handlers ---
 
     @FXML
     public void onToggleParticipantName() {
@@ -233,6 +135,79 @@ public class MainViewController {
             default -> logAction("Unknown Action");
         }
     }
+
+    @FXML
+    public void onPrintAll() {
+        logAction("Printing all items...");
+        mainTextArea.setText(buildPrintAllContent());
+    }
+
+    @FXML
+    public void onClear() {
+        mainTextArea.clear();
+        resetStatus();
+    }
+
+    @FXML
+    public void onExit() {
+        Platform.exit();
+    }
+
+    @FXML
+    public void onSave() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Reservations");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File selectedFile = fileChooser.showSaveDialog(statusLabel.getScene().getWindow());
+        if (selectedFile == null) {
+            logAction("Save command cancelled");
+            return;
+        }
+
+        String fileContent = buildPrintAllContent();
+        try {
+            Files.writeString(selectedFile.toPath(), fileContent, StandardCharsets.UTF_8);
+            logAction("Saved: " + selectedFile.getName());
+        } catch (IOException exception) {
+            showError("Save Failed", exception.getMessage());
+        }
+    }
+
+    @FXML
+    public void onOpen() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File selectedFile = fileChooser.showOpenDialog(statusLabel.getScene().getWindow());
+        if (selectedFile == null) {
+            logAction("Open command cancelled");
+            return;
+        }
+
+        List<String> fileLines;
+        try {
+            fileLines = Files.readAllLines(selectedFile.toPath(), StandardCharsets.UTF_8);
+        } catch (IOException exception) {
+            showError("Open Failed", exception.getMessage());
+            return;
+        }
+
+        List<Reservation> parsedReservations = parseReservationsFromFileLines(fileLines);
+        if (parsedReservations == null) {
+            return;
+        }
+
+        reservationComboBox.getItems().setAll(parsedReservations);
+        if (reservationComboBox.getItems().isEmpty()) {
+            changeSelection(-1);
+        } else {
+            changeSelection(0);
+        }
+
+        logAction("Opened: " + selectedFile.getName() + " (" + parsedReservations.size() + " rows loaded)");
+    }
+
+    // --- Action Logic ---
 
     private void registerParticipant() {
         if (participantNameField.isDisabled() || classTypeField.isDisabled() || classTimeField.isDisabled()) {
@@ -314,12 +289,116 @@ public class MainViewController {
         logAction("Changed to: " + updatedReservation);
     }
 
-    private boolean hasMatchingReservation(Reservation reservationToFind) {
-        for (Reservation reservation : reservationComboBox.getItems()) {
-            if (areReservationsEqual(reservation, reservationToFind)) {
-                return true;
+    // --- Selection & State Management ---
+
+    private void changeSelection(int index) {
+        if (isUpdatingSelection) return;
+        isUpdatingSelection = true;
+        try {
+            int listSize = reservationComboBox.getItems().size();
+            boolean isValidIndex = index >= 0 && index < listSize;
+
+            updateComboBoxSelection(index, isValidIndex);
+            
+            int targetSpinnerValue = calculateTargetSpinnerValue(index, listSize, isValidIndex);
+            updateSpinnerValue(targetSpinnerValue);
+
+            updateFieldsAndLog(index, isValidIndex, targetSpinnerValue);
+        } finally {
+            isUpdatingSelection = false;
+        }
+    }
+
+    private void updateComboBoxSelection(int targetIndex, boolean isValidIndex) {
+        int currentIndex = reservationComboBox.getSelectionModel().getSelectedIndex();
+        if (isValidIndex) {
+            if (currentIndex != targetIndex) {
+                reservationComboBox.getSelectionModel().select(targetIndex);
+            }
+        } else {
+            if (currentIndex != -1) {
+                reservationComboBox.getSelectionModel().clearSelection();
             }
         }
+    }
+
+    private int calculateTargetSpinnerValue(int index, int listSize, boolean isValidIndex) {
+        if (isValidIndex) {
+            return index + 1;
+        }
+        return (listSize == 0) ? 0 : Math.min(20, listSize + 1);
+    }
+
+    private void updateSpinnerValue(int targetValue) {
+        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
+                (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner.getValueFactory();
+
+        if (valueFactory.getValue() == null || valueFactory.getValue() != targetValue) {
+            valueFactory.setValue(targetValue);
+        }
+    }
+
+    private void updateFieldsAndLog(int index, boolean isValidIndex, int spinnerValue) {
+        if (isValidIndex) {
+            Reservation selectedReservation = reservationComboBox.getItems().get(index);
+            populateFieldsFromSelection(selectedReservation);
+            logSelectedRecordMessage(spinnerValue, selectedReservation);
+            return;
+        }
+
+        clearFields();
+        logSelectedRecordMessage(spinnerValue, null);
+    }
+
+    private void updateSpinnerRange() {
+        int reservationCount = reservationComboBox.getItems().size();
+        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
+                (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner.getValueFactory();
+
+        if (reservationCount == 0) {
+            resetSpinnerForEmptyList(valueFactory);
+            return;
+        }
+
+        int maxPosition = Math.min(20, reservationCount + 1);
+        valueFactory.setMin(1);
+        valueFactory.setMax(maxPosition);
+
+        if (valueFactory.getValue() == null || valueFactory.getValue() < 1) {
+            valueFactory.setValue(1);
+        } else if (valueFactory.getValue() > maxPosition) {
+            valueFactory.setValue(maxPosition);
+        }
+    }
+
+    private void resetSpinnerForEmptyList(SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory) {
+        valueFactory.setMin(0);
+        valueFactory.setMax(0);
+        valueFactory.setValue(0);
+    }
+
+    private void logSelectedRecordMessage(int position, Reservation reservation) {
+        if (reservation == null) {
+            logAction("Selected record [" + position + "]: No element");
+            return;
+        }
+
+        logAction("Selected record [" + position + "]: " + reservation);
+    }
+
+    private void populateFieldsFromSelection(Reservation reservation) {
+        participantNameField.setText(reservation.participantName());
+        classTypeField.setText(reservation.classType());
+        classTimeField.setText(reservation.classTime());
+    }
+
+    // --- Data Helpers & Parsing ---
+
+    private boolean hasMatchingReservation(Reservation reservationToFind) {
+        for (Reservation reservation : reservationComboBox.getItems())
+            if (areReservationsEqual(reservation, reservationToFind))
+                return true;
+
         return false;
     }
 
@@ -343,9 +422,9 @@ public class MainViewController {
 
     private String buildPrintAllContent() {
         StringBuilder printAllContent = new StringBuilder();
-        for (Reservation reservation : reservationComboBox.getItems()) {
+        for (Reservation reservation : reservationComboBox.getItems()) 
             printAllContent.append(reservation).append("\n");
-        }
+
         return printAllContent.toString();
     }
 
@@ -365,67 +444,10 @@ public class MainViewController {
         return new Reservation(participantName, classType, classTime);
     }
 
-    private void logAction(String message) {
-        resetStatusStyle();
-        statusLabel.setText(message);
-    }
-
-    private void showError(String errorTitle, String errorDetails) {
-        statusLabel.setText("Error: " + errorTitle + " - " + errorDetails);
-        statusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-    }
-
-    private void resetStatusStyle() {
-        statusLabel.setStyle("-fx-text-fill: black; -fx-font-weight: normal;");
-    }
-
-    private void clearFields() {
-        participantNameField.clear();
-        classTypeField.clear();
-        classTimeField.clear();
-    }
-
-    @FXML
-    public void onSave() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Reservations");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-        File selectedFile = fileChooser.showSaveDialog(statusLabel.getScene().getWindow());
-        if (selectedFile == null) {
-            logAction("Save command cancelled");
-            return;
-        }
-
-        String fileContent = buildPrintAllContent();
-        try {
-            Files.writeString(selectedFile.toPath(), fileContent, StandardCharsets.UTF_8);
-            logAction("Saved: " + selectedFile.getName());
-        } catch (IOException exception) {
-            showError("Save Failed", exception.getMessage());
-        }
-    }
-
-    @FXML
-    public void onOpen() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-        File selectedFile = fileChooser.showOpenDialog(statusLabel.getScene().getWindow());
-        if (selectedFile == null) {
-            logAction("Open command cancelled");
-            return;
-        }
-
+    private List<Reservation> parseReservationsFromFileLines(List<String> fileLines) {
         List<Reservation> parsedReservations = new ArrayList<>();
-        List<String> fileLines;
-        try {
-            fileLines = Files.readAllLines(selectedFile.toPath(), StandardCharsets.UTF_8);
-        } catch (IOException exception) {
-            showError("Open Failed", exception.getMessage());
-            return;
-        }
-
         int lineNumber = 0;
+
         for (String rawLine : fileLines) {
             lineNumber++;
             String line = rawLine == null ? "" : rawLine.trim();
@@ -437,7 +459,7 @@ public class MainViewController {
             if (parsedReservation == null) {
                 mainTextArea.setText("Invalid file format at line " + lineNumber + ":\n" + rawLine);
                 showError("Invalid File Format", "Invalid line " + lineNumber + ": " + rawLine);
-                return;
+                return null;
             }
 
             if (!parsedReservations.contains(parsedReservation)) {
@@ -445,33 +467,33 @@ public class MainViewController {
             }
         }
 
-        reservationComboBox.getItems().setAll(parsedReservations);
-        if (reservationComboBox.getItems().isEmpty()) {
-            reservationComboBox.getSelectionModel().clearSelection();
-            clearFields();
-        } else {
-            reservationComboBox.getSelectionModel().selectFirst();
-            updateReservationPositionFromIndex(0);
-        }
-
-        logAction("Opened: " + selectedFile.getName() + " (" + parsedReservations.size() + " rows loaded)");
+        return parsedReservations;
     }
 
-    @FXML
-    public void onClear() {
-        mainTextArea.clear();
-        resetStatusStyle();
+    // --- UI Utilities ---
+
+    private void logAction(String message) {
+        resetStyle();
+        statusLabel.setText(message);
+    }
+
+    private void showError(String errorTitle, String errorDetails) {
+        statusLabel.setText("Error: " + errorTitle + " - " + errorDetails);
+        statusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+    }
+
+    private void resetStyle() {
+        statusLabel.setStyle("-fx-text-fill: black; -fx-font-weight: normal;");
+    }
+
+    private void resetStatus() {
+        resetStyle();
         statusLabel.setText("Ready");
     }
 
-    @FXML
-    public void onExit() {
-        Platform.exit();
-    }
-
-    @FXML
-    public void onPrintAll() {
-        logAction("Printing all items...");
-        mainTextArea.setText(buildPrintAllContent());
+    private void clearFields() {
+        participantNameField.clear();
+        classTypeField.clear();
+        classTimeField.clear();
     }
 }
