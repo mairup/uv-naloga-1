@@ -49,8 +49,8 @@
 .floating-body,
 .floating-toolbar-container {
   -fx-background-color: #fdfdfb;
-  -fx-background-radius: 10px;
-  -fx-border-radius: 10px;
+  -fx-background-radius: 6px;
+  -fx-border-radius: 6px;
   -fx-border-color: #8c9985;
   -fx-border-width: 1px;
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 15, 0, 0, 8);
@@ -62,8 +62,8 @@
 .floating-reservation-panel,
 .floating-action-panel {
   -fx-background-color: #f1f4ee;
-  -fx-background-radius: 8px;
-  -fx-border-radius: 8px;
+  -fx-background-radius: 6px;
+  -fx-border-radius: 6px;
   -fx-border-color: #c8d6c0;
   -fx-border-width: 1px;
 }
@@ -211,12 +211,12 @@
 .combo-box-popup .list-view {
   -fx-background-color: #f7e7de;
   -fx-border-color: #e2cfc5;
-  -fx-background-radius: 8px;
-  -fx-border-radius: 8px;
+  -fx-background-radius: 6px;
+  -fx-border-radius: 6px;
   -fx-padding: 2px;
 }
 .combo-box-popup .list-view .virtual-flow {
-  -fx-background-radius: 8px;
+  -fx-background-radius: 6px;
 }
 .combo-box-popup .list-view .clipped-container {
   -fx-background-color: transparent;
