@@ -107,7 +107,10 @@ public class MainViewController {
     }
 
     private void initializeSpinner() {
-        reservationPositionSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0, 0));
+        SpinnerValueFactory.IntegerSpinnerValueFactory factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,
+                0, 0);
+        factory.setWrapAround(false);
+        reservationPositionSpinner.setValueFactory(factory);
         reservationPositionSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 changeSelection(newValue - 1);
@@ -121,13 +124,11 @@ public class MainViewController {
                 new Reservation("John Smith", "Pilates", "19:30"),
                 new Reservation("Alice Johnson", "Zumba", "17:00"),
                 new Reservation("Bob Brown", "CrossFit", "20:00"),
-                new Reservation("Charlie Davis", "Spin", "06:00")
-        );
+                new Reservation("Charlie Davis", "Spin", "06:00"));
 
         reservationComboBox.getItems().addListener((ListChangeListener<Reservation>) change -> updateSpinnerRange());
-        reservationComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-                changeSelection(reservationComboBox.getSelectionModel().getSelectedIndex())
-        );
+        reservationComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
+                newValue) -> changeSelection(reservationComboBox.getSelectionModel().getSelectedIndex()));
 
         updateSpinnerRange();
         if (reservationComboBox.getItems().isEmpty()) {
@@ -144,8 +145,7 @@ public class MainViewController {
         participantNameField.setDisable(!toggleParticipantNameItem.isSelected());
         logAction(getFieldToggleMessage(
                 translateAndFormat("label.participantName.noColon"),
-                toggleParticipantNameItem.isSelected()
-        ));
+                toggleParticipantNameItem.isSelected()));
     }
 
     @FXML
@@ -153,8 +153,7 @@ public class MainViewController {
         classTypeField.setDisable(!toggleClassTypeItem.isSelected());
         logAction(getFieldToggleMessage(
                 translateAndFormat("label.classType.noColon"),
-                toggleClassTypeItem.isSelected()
-        ));
+                toggleClassTypeItem.isSelected()));
     }
 
     @FXML
@@ -162,8 +161,7 @@ public class MainViewController {
         classTimeField.setDisable(!toggleClassTimeItem.isSelected());
         logAction(getFieldToggleMessage(
                 translateAndFormat("label.classTime.noColon"),
-                toggleClassTimeItem.isSelected()
-        ));
+                toggleClassTimeItem.isSelected()));
     }
 
     @FXML
@@ -233,7 +231,8 @@ public class MainViewController {
     public void onSave() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(translateAndFormat("dialog.save.title"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(translateAndFormat("dialog.fileFilter.text"), "*.txt"));
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter(translateAndFormat("dialog.fileFilter.text"), "*.txt"));
         File selectedFile = fileChooser.showSaveDialog(statusLabel.getScene().getWindow());
         if (selectedFile == null) {
             logAction(translateAndFormat("status.saveCancelled"));
@@ -253,7 +252,8 @@ public class MainViewController {
     public void onOpen() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(translateAndFormat("dialog.open.title"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(translateAndFormat("dialog.fileFilter.text"), "*.txt"));
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter(translateAndFormat("dialog.fileFilter.text"), "*.txt"));
         File selectedFile = fileChooser.showOpenDialog(statusLabel.getScene().getWindow());
         if (selectedFile == null) {
             logAction(translateAndFormat("status.openCancelled"));
@@ -304,7 +304,8 @@ public class MainViewController {
         Reservation newReservation = new Reservation(participantName, classType, classTime);
 
         if (hasMatchingReservation(newReservation)) {
-            showError(translateAndFormat("error.duplicateEntry.title"), translateAndFormat("error.duplicateEntry.details"));
+            showError(translateAndFormat("error.duplicateEntry.title"),
+                    translateAndFormat("error.duplicateEntry.details"));
             return;
         }
 
@@ -316,7 +317,8 @@ public class MainViewController {
     private void unregisterParticipant() {
         int selectedIndex = reservationComboBox.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
-            showError(translateAndFormat("error.noSelection.title"), translateAndFormat("error.noSelection.unregisterDetails"));
+            showError(translateAndFormat("error.noSelection.title"),
+                    translateAndFormat("error.noSelection.unregisterDetails"));
             return;
         }
 
@@ -336,13 +338,15 @@ public class MainViewController {
 
     private void changeReservation() {
         if (participantNameField.isDisabled() && classTypeField.isDisabled() && classTimeField.isDisabled()) {
-            showError(translateAndFormat("error.actionNotAllowed.title"), translateAndFormat("error.actionNotAllowed.details"));
+            showError(translateAndFormat("error.actionNotAllowed.title"),
+                    translateAndFormat("error.actionNotAllowed.details"));
             return;
         }
 
         int selectedIndex = reservationComboBox.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
-            showError(translateAndFormat("error.noSelection.title"), translateAndFormat("error.noSelection.changeDetails"));
+            showError(translateAndFormat("error.noSelection.title"),
+                    translateAndFormat("error.noSelection.changeDetails"));
             return;
         }
 
@@ -351,7 +355,8 @@ public class MainViewController {
         String classTime = getTrimmedClassTime();
 
         if (participantName.isEmpty() || classType.isEmpty() || classTime.isEmpty()) {
-            showError(translateAndFormat("error.missingInformation.title"), translateAndFormat("error.missingInformation.details"));
+            showError(translateAndFormat("error.missingInformation.title"),
+                    translateAndFormat("error.missingInformation.details"));
             return;
         }
 
@@ -371,14 +376,20 @@ public class MainViewController {
     // --- Selection & State Management ---
 
     private void changeSelection(int index) {
-        if (isUpdatingSelection) return;
+        if (isUpdatingSelection)
+            return;
         isUpdatingSelection = true;
         try {
             int listSize = reservationComboBox.getItems().size();
+
+            if (listSize > 0 && index < 0) {
+                index = 0;
+            }
+
             boolean isValidIndex = index >= 0 && index < listSize;
 
             updateComboBoxSelection(index, isValidIndex);
-            
+
             int targetSpinnerValue = calculateTargetSpinnerValue(index, listSize, isValidIndex);
             updateSpinnerValue(targetSpinnerValue);
 
@@ -405,12 +416,16 @@ public class MainViewController {
         if (isValidIndex) {
             return index + 1;
         }
-        return (listSize == 0) ? 0 : Math.min(20, listSize + 1);
+        if (listSize == 0)
+            return 0;
+        if (index < 0)
+            return 1;
+        return Math.min(20, listSize + 1);
     }
 
     private void updateSpinnerValue(int targetValue) {
-        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
-                (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner.getValueFactory();
+        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory = (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner
+                .getValueFactory();
 
         if (valueFactory.getValue() == null || valueFactory.getValue() != targetValue) {
             valueFactory.setValue(targetValue);
@@ -438,8 +453,8 @@ public class MainViewController {
 
     private void updateSpinnerRange() {
         int reservationCount = reservationComboBox.getItems().size();
-        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
-                (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner.getValueFactory();
+        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory = (SpinnerValueFactory.IntegerSpinnerValueFactory) reservationPositionSpinner
+                .getValueFactory();
 
         if (reservationCount == 0) {
             resetSpinnerForEmptyList(valueFactory);
@@ -508,7 +523,7 @@ public class MainViewController {
 
     private String buildPrintAllContent() {
         StringBuilder printAllContent = new StringBuilder();
-        for (Reservation reservation : reservationComboBox.getItems()) 
+        for (Reservation reservation : reservationComboBox.getItems())
             printAllContent.append(reservation).append("\n");
 
         return printAllContent.toString();
@@ -544,7 +559,8 @@ public class MainViewController {
             Reservation parsedReservation = parseReservationLine(line);
             if (parsedReservation == null) {
                 mainTextArea.setText(translateAndFormat("error.invalidFileFormat.textArea", lineNumber, rawLine));
-                showError(translateAndFormat("error.invalidFileFormat.title"), translateAndFormat("error.invalidFileFormat.line", lineNumber, rawLine));
+                showError(translateAndFormat("error.invalidFileFormat.title"),
+                        translateAndFormat("error.invalidFileFormat.line", lineNumber, rawLine));
                 return null;
             }
 

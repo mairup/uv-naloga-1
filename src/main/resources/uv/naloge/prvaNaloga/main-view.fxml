@@ -30,7 +30,6 @@
             styleClass="earth-root"
             prefHeight="850.0" prefWidth="1400.0">
 
-    <!-- FRAME: Top MenuBar -->
     <top>
         <MenuBar styleClass="earth-menu-bar" BorderPane.alignment="CENTER">
             <Menu text="%menu.file">
@@ -62,16 +61,16 @@
         <VBox spacing="10.0" style="-fx-padding: 12 16 10 16;" BorderPane.alignment="CENTER">
             <BorderPane styleClass="floating-toolbar-container">
                 <center>
-                    <ToolBar prefHeight="40.0" styleClass="floating-toolbar earth-toolbar" BorderPane.alignment="CENTER_LEFT">
-                        <Button mnemonicParsing="false" styleClass="btn btn-default earth-toolbar-button" text="%toolbar.open" onAction="#onOpen" />
+                    <ToolBar prefHeight="40.0" styleClass="earth-toolbar" BorderPane.alignment="CENTER_LEFT">
+                        <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.open" onAction="#onOpen" />
                         <Region prefWidth="5.0" />
-                        <Button mnemonicParsing="false" styleClass="btn btn-default earth-toolbar-button" text="%toolbar.save" onAction="#onSave" />
+                        <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.save" onAction="#onSave" />
                         <Region prefWidth="5.0" />
-                        <Button mnemonicParsing="false" styleClass="btn btn-default earth-toolbar-button" text="%toolbar.clear" onAction="#onClear" />
+                        <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.clear" onAction="#onClear" />
                         <Region prefWidth="5.0" />
-                        <Button mnemonicParsing="false" styleClass="btn btn-default earth-toolbar-button" text="%toolbar.printAll" onAction="#onPrintAll" />
+                        <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.printAll" onAction="#onPrintAll" />
                         <Region prefWidth="5.0" />
-                        <Button mnemonicParsing="false" styleClass="btn btn-default earth-toolbar-button" text="%toolbar.exit" onAction="#onExit" />
+                        <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.exit" onAction="#onExit" />
                     </ToolBar>
                 </center>
             </BorderPane>
@@ -90,13 +89,13 @@
                                     </columnConstraints>
 
                                     <Label text="%label.reservation" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                                    <ComboBox fx:id="reservationComboBox" styleClass="form-control earth-input" prefWidth="292.0" minWidth="292.0" maxWidth="292.0" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                    <ComboBox fx:id="reservationComboBox" styleClass="form-control,earth-input" prefWidth="292.0" minWidth="292.0" maxWidth="292.0" GridPane.rowIndex="0" GridPane.columnIndex="1" />
                                     <Label text="%label.atPosition" GridPane.rowIndex="0" GridPane.columnIndex="2">
                                         <GridPane.margin>
                                             <Insets left="48.0" />
                                         </GridPane.margin>
                                     </Label>
-                                    <Spinner fx:id="reservationPositionSpinner" styleClass="form-control earth-input" editable="true" prefWidth="80.0" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+                                    <Spinner fx:id="reservationPositionSpinner" styleClass="form-control,earth-input" editable="true" prefWidth="80.0" GridPane.rowIndex="0" GridPane.columnIndex="3" />
                                 </GridPane>
                             </center>
                         </BorderPane>
@@ -116,13 +115,13 @@
                                         </rowConstraints>
 
                                         <Label text="%label.participantName" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                                        <TextField fx:id="participantNameField" styleClass="form-control earth-input" disable="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <TextField fx:id="participantNameField" styleClass="form-control,earth-input" disable="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
                                         <Label text="%label.classType" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                                        <TextField fx:id="classTypeField" styleClass="form-control earth-input" disable="true" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <TextField fx:id="classTypeField" styleClass="form-control,earth-input" disable="true" GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
                                         <Label text="%label.classTime" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                                        <TextField fx:id="classTimeField" styleClass="form-control earth-input" disable="true" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                        <TextField fx:id="classTimeField" styleClass="form-control,earth-input" disable="true" GridPane.rowIndex="2" GridPane.columnIndex="1" />
                                     </GridPane>
                                 </center>
                             </BorderPane>
@@ -152,21 +151,20 @@
                                             </BorderPane>
                                         </VBox>
                                         <HBox alignment="CENTER_LEFT" style="-fx-padding: 8 0 0 0;">
-                                            <Button styleClass="btn btn-success" text="%button.executeAction" onAction="#onExecuteAction" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                                            <Button styleClass="btn,btn-success" text="%button.executeAction" onAction="#onExecuteAction" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                                         </HBox>
                                     </VBox>
                                 </center>
                             </BorderPane>
                         </HBox>
 
-                        <TextArea fx:id="mainTextArea" styleClass="form-control earth-input" prefHeight="225.0" wrapText="true" />
+                        <TextArea fx:id="mainTextArea" styleClass="form-control,earth-input" prefHeight="225.0" wrapText="true" />
                     </VBox>
                 </center>
             </BorderPane>
         </VBox>
     </center>
 
-    <!-- FRAME: Bottom Status Area -->
     <bottom>
         <Label fx:id="statusLabel" text="%status.ready" BorderPane.alignment="CENTER_LEFT" styleClass="status-label">
             <BorderPane.margin>
