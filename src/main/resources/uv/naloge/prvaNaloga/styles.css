@@ -17,6 +17,35 @@
 .earth-menu-bar .label {
   -fx-text-fill: #1c3019;
 }
+.earth-menu-bar .menu:hover,
+.earth-menu-bar .menu:showing {
+  -fx-background-color: #4f7a54;
+}
+.earth-menu-bar .menu:hover .label,
+.earth-menu-bar .menu:showing .label {
+  -fx-text-fill: #f6fbf4;
+}
+.earth-menu-bar .context-menu {
+  -fx-background-color: #e4efdf;
+  -fx-background-radius: 6px;
+  -fx-border-color: #b7c9b0;
+  -fx-border-radius: 6px;
+}
+.earth-menu-bar .context-menu .menu-item,
+.earth-menu-bar .context-menu .check-menu-item,
+.earth-menu-bar .context-menu .radio-menu-item {
+  -fx-background-color: #e4efdf;
+}
+.earth-menu-bar .context-menu .menu-item .label,
+.earth-menu-bar .context-menu .check-menu-item .label,
+.earth-menu-bar .context-menu .radio-menu-item .label {
+  -fx-text-fill: #234026;
+}
+.earth-menu-bar .context-menu .menu-item:focused,
+.earth-menu-bar .context-menu .check-menu-item:focused,
+.earth-menu-bar .context-menu .radio-menu-item:focused {
+  -fx-background-color: #cfe2c7;
+}
 .floating-body,
 .floating-toolbar-container {
   -fx-background-color: #fdfdfb;
@@ -182,6 +211,15 @@
 .combo-box-popup .list-view {
   -fx-background-color: #f7e7de;
   -fx-border-color: #e2cfc5;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-padding: 2px;
+}
+.combo-box-popup .list-view .virtual-flow {
+  -fx-background-radius: 8px;
+}
+.combo-box-popup .list-view .clipped-container {
+  -fx-background-color: transparent;
 }
 .combo-box-popup .list-cell {
   -fx-background-color: #f7e7de;
@@ -195,13 +233,18 @@
   -fx-background-color: #d28c75;
   -fx-text-fill: #ffffff;
 }
-.combo-box-base .arrow-button,
+.combo-box-base .arrow-button {
+  -fx-background-color: #f7e7de;
+  -fx-background-radius: 0 5px 5px 0;
+}
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
   -fx-background-color: #a4bfa4;
   -fx-background-radius: 0 5px 5px 0;
 }
-.combo-box-base .arrow-button:hover,
+.combo-box-base .arrow-button:hover {
+  -fx-background-color: #f7e7de;
+}
 .spinner .increment-arrow-button:hover,
 .spinner .decrement-arrow-button:hover {
   -fx-background-color: #8ca98c;
@@ -215,9 +258,17 @@
   -fx-background-radius: 0 0 4px 0;
 }
 .combo-box-base .arrow,
-.spinner .increment-arrow-button .arrow,
-.spinner .decrement-arrow-button .arrow {
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
   -fx-background-color: #ffffff;
+}
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+  -fx-mark-color: #ffffff;
+}
+
+.combo-box-base .arrow {
+  -fx-background-color: #4f2f24;
 }
 
 .text-area.earth-input {

@@ -65,7 +65,7 @@
                         <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.open" onAction="#onOpen" />
                         <Region prefWidth="5.0" />
                         <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.save" onAction="#onSave" />
-                        <Region prefWidth="5.0" />
+                        <Region HBox.hgrow="ALWAYS" />
                         <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.clear" onAction="#onClear" />
                         <Region prefWidth="5.0" />
                         <Button mnemonicParsing="false" styleClass="btn,btn-default,earth-toolbar-button" text="%toolbar.printAll" onAction="#onPrintAll" />
