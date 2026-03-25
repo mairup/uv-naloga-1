@@ -130,7 +130,7 @@
                                 <center>
                                     <VBox spacing="10.0" style="-fx-padding: 14;" maxWidth="Infinity">
                                         <VBox spacing="10.0" maxWidth="Infinity">
-                                            <BorderPane styleClass="floating-radio-option" maxWidth="Infinity">
+                                            <BorderPane styleClass="floating-radio-option" maxWidth="Infinity" onMouseClicked="#onSelectRegisterAction">
                                                 <left>
                                                     <RadioButton fx:id="registerRadioButton" styleClass="floating-radio-button" text="%radio.registerParticipant" selected="true">
                                                         <toggleGroup>
@@ -139,12 +139,12 @@
                                                     </RadioButton>
                                                 </left>
                                             </BorderPane>
-                                            <BorderPane styleClass="floating-radio-option" maxWidth="Infinity">
+                                            <BorderPane styleClass="floating-radio-option" maxWidth="Infinity" onMouseClicked="#onSelectUnregisterAction">
                                                 <left>
                                                     <RadioButton fx:id="unregisterRadioButton" styleClass="floating-radio-button" text="%radio.unregisterParticipant" toggleGroup="$actionToggleGroup"/>
                                                 </left>
                                             </BorderPane>
-                                            <BorderPane styleClass="floating-radio-option" maxWidth="Infinity">
+                                            <BorderPane styleClass="floating-radio-option" maxWidth="Infinity" onMouseClicked="#onSelectChangeReservationAction">
                                                 <left>
                                                     <RadioButton fx:id="changeReservationRadioButton" styleClass="floating-radio-button" text="%radio.changeReservation" toggleGroup="$actionToggleGroup"/>
                                                 </left>

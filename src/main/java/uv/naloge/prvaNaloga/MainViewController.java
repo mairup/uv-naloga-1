@@ -191,6 +191,21 @@ public class MainViewController {
     }
 
     @FXML
+    public void onSelectRegisterAction() {
+        registerRadioButton.setSelected(true);
+    }
+
+    @FXML
+    public void onSelectUnregisterAction() {
+        unregisterRadioButton.setSelected(true);
+    }
+
+    @FXML
+    public void onSelectChangeReservationAction() {
+        changeReservationRadioButton.setSelected(true);
+    }
+
+    @FXML
     public void onPrintAll() {
         logAction(translateAndFormat("status.printingAll"));
         mainTextArea.setText(buildPrintAllContent());

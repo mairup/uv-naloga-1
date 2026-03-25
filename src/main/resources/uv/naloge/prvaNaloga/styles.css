@@ -99,6 +99,10 @@
   -fx-padding: 10px 14px;
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
 }
+.floating-radio-option:hover {
+  -fx-background-color: #efcfbf;
+  -fx-border-color: #d8bbae;
+}
 .floating-radio-button {
   -fx-label-padding: 0 0 0 10px;
   -fx-text-fill: #2b3d2b;
@@ -224,14 +228,22 @@
 .combo-box-popup .list-cell {
   -fx-background-color: #f7e7de;
   -fx-text-fill: #3a231c;
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
+  -fx-background-insets: 1px 2px;
+  -fx-padding: 5px 10px 7px 10px;
 }
 .combo-box-popup .list-cell:filled:hover {
   -fx-background-color: #efcfbf;
   -fx-text-fill: #2d1c16;
+  -fx-background-radius: 4px;
+  -fx-background-insets: 1px 2px;
 }
 .combo-box-popup .list-cell:filled:selected {
   -fx-background-color: #d28c75;
   -fx-text-fill: #ffffff;
+  -fx-background-radius: 4px;
+  -fx-background-insets: 1px 2px;
 }
 .combo-box-base .arrow-button {
   -fx-background-color: #f7e7de;
