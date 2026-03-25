@@ -1,9 +1,9 @@
 ## First homework project for the User Interfaces class at FRI
 
-The application is built using JavaFX and BootstrapFX, following the assignment requirements for a simple, single-screen desktop UI. The project demonstrates basic UI/UX principles, menu and toolbar usage, and file operations, as specified in the assignment.
+The application is built using JavaFX and BootstrapFX, following the assignment requirements for a simple, single-screen desktop UI. The project demonstrates basic UI/UX principles, (FEVH) menu and toolbar usage, and file operations.
 
 ## Features
-- Menu bar and toolbar with standard actions
+- FEVH Menu bar and toolbar with standard actions
 - Reservation management (add, remove, change)
 - File open/save for reservation data
 - Status bar for user feedback
