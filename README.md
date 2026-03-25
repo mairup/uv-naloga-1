@@ -14,3 +14,6 @@ mai
 ## Note
 This project is for educational purposes as part of the FRI User Interfaces course.
 
+## Screenshot:
+
+<img width="1900" height="1474" alt="image" src="https://github.com/user-attachments/assets/b12dd749-7ce2-4611-83d7-01e0206a8514" />
