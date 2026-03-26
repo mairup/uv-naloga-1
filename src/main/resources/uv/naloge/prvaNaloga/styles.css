@@ -279,6 +279,13 @@
   -fx-mark-color: #ffffff;
 }
 
+.spinner.earth-input .text-field,
+.spinner.earth-input:focused .text-field,
+.spinner:focused .text-field {
+  -fx-background-color: #fdfdfb;
+  -fx-control-inner-background: #fdfdfb;
+}
+
 .combo-box-base .arrow {
   -fx-background-color: #4f2f24;
 }
