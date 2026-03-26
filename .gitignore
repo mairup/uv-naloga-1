@@ -25,6 +25,7 @@ hs_err_pid*
 # Gradle
 .gradle/
 build/
+bin/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/resources/**/*.jar
 !**/src/test/**/resources/**/*.jar
@@ -34,6 +35,11 @@ build/
 *.iws
 *.iml
 out/
+
+# Eclipse / VS Code Java language server metadata
+.classpath
+.project
+.settings/
 
 # OS
 .DS_Store

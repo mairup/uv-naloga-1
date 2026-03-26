@@ -1,7 +1,6 @@
 plugins {
     java
     application
-    id("org.javamodularity.moduleplugin") version "1.8.15"
     id("org.openjfx.javafxplugin") version "0.0.14"
     id("org.beryx.jlink") version "2.26.0"
     idea
@@ -27,7 +26,6 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 application {
-    mainModule.set("uv.naloge.prvaNaloga")
     mainClass.set("uv.naloge.prvaNaloga.AssignmentOneApplication")
 }
 
